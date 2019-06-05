@@ -1,19 +1,20 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 from matplotlib.pylab import rcParams
 from sklearn.preprocessing import MinMaxScaler
 
 from sklearn import preprocessing;
-#from sklearn.model_selection import cross_validate
+from sklearn.model_selection import cross_validate
 from sklearn.model_selection import train_test_split
 from sklearn import linear_model;
 
 
 ####read data
 
-df = pd.read_csv('acglo.csv')
+df = pd.read_csv(sys.argv[1])
 
 ####visualization
 
@@ -28,8 +29,8 @@ df['Date'] = pd.to_datetime(df.Date,format='%Y-%m-%d')
 df.index = df['Date']
 
 #plot
-plt.figure(figsize=(16,8))
-plt.plot(df['Close'], label='Close Price history')
+plt.figure(figsize=(12,4))
+#plt.plot(df['Close'], label='Close Price history')
 #plt.show()
 
 #####liner regretion
@@ -52,11 +53,13 @@ forecast_out = 5                                        # 要预测未来几个�
 test_size = 0.2;                                        # test set 的大小
 print("start preparing data for the model")
 X_train, X_test, Y_train, Y_test , X_lately =prepare_data(df,forecast_col,forecast_out,test_size)
+'''
 print(X_train)
 print(X_test)
 print(Y_train)
 print(Y_test)
 print(X_lately)
+'''
 print("model data prepared")
 model = linear_model.LinearRegression();              
 print("training model... ... ")
@@ -68,10 +71,12 @@ print(score)
 
 y_test_predict = model.predict(X_test)
 
-plt.plot(y_test_predict)
-plt.plot(Y_test)
-#plt.show()
+plt.plot(y_test_predict,color='c')
+plt.plot(Y_test,color='b')
+for i in range(len(Y_test)):
+    print(y_test_predict[i],Y_test[i])
+plt.show()
 
-forecast= learner.predict(X_lately)
+forecast= model.predict(X_lately)
 print(forecast)
 # array([112.46087852, 109.20867432, 109.46117455, 108.9258753 ,110.10757453])
