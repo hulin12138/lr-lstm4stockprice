@@ -43,11 +43,11 @@ def prepare_data(df,forecast_col,forecast_out,test_size):
     label.dropna(inplace=True);                         # 去掉 na values
     y = np.array(label)                                
     
-    #X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=test_size) 
-    X_train = X[:-60]
-    X_test = X[-60:]
-    Y_train = y[:-60]
-    Y_test = y[-60:]	
+    X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=test_size) 
+    #X_train = X[:-60]
+    #X_test = X[-60:]
+    #Y_train = y[:-60]
+    #Y_test = y[-60:]	
     response = [X_train,X_test , Y_train, Y_test , X_lately];
     return response;
 
@@ -70,16 +70,16 @@ model.fit(X_train,Y_train);
 print("model training done")
 score = model.score(X_test,Y_test);
 print(score)        
-# 0.9913674520169482
 
 y_test_predict = model.predict(X_test)
 
+print(y_test_predict.shape)
+print(Y_test.shape)
 plt.plot(y_test_predict,color='r')
 plt.plot(Y_test,color='b')
-for i in range(len(Y_test)):
-    print(y_test_predict[i],Y_test[i])
+#for i in range(len(Y_test)):
+#    print(y_test_predict[i],Y_test[i])
 plt.show()
 
 forecast= model.predict(X_lately)
 print(forecast)
-# array([112.46087852, 109.20867432, 109.46117455, 108.9258753 ,110.10757453])
