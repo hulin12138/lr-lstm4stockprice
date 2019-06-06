@@ -89,7 +89,11 @@ X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
 closing_price = model.predict(X_test)
 closing_price = scaler.inverse_transform(closing_price)
 
-
+with open(sys.argv[2],'w') as f:
+    for i in range(len(train)-len(test)):
+        f.write(str(train[i][0])+' '+str(-1)+'\n')
+    for i in range(len(train)-len(test),len(train)):
+        f.write(str(train[i][0])+' '+str(test[i-(len(train)-len(test))][0])+'\n')
 
 '''
 #for plotting
