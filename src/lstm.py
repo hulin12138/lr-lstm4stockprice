@@ -24,9 +24,6 @@ df = pd.read_csv(sys.argv[1])
 #setting figure size
 rcParams['figure.figsize'] = 20,10
 
-#for normalizing data
-scaler = MinMaxScaler(feature_range=(0, 1))
-
 #setting index as date
 df['Date'] = pd.to_datetime(df.Date,format='%Y-%m-%d')
 df.index = df['Date']
@@ -67,13 +64,34 @@ x_train, y_train = np.array(x_train), np.array(y_train)
 x_train = np.reshape(x_train, (x_train.shape[0],x_train.shape[1],1))
 
 # 建立 LSTM network
-model = Sequential()
-model.add(LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1],1)))
-model.add(LSTM(units=50))
-model.add(Dense(1))
+#model = Sequential()
+#model.add(LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1],1)))
+#model.add(LSTM(units=50))
+#model.add(Dense(1))
 
-model.compile(loss='mean_squared_error', optimizer='adam')
-model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=2)
+#model.compile(loss='mean_squared_error', optimizer='adam')
+#model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=2)
+
+model= Sequential()
+
+model.add(LSTM(units = 50, return_sequences = True, input_shape = (x_train.shape[1], 1)))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units = 50, return_sequences = True))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units = 50, return_sequences = True))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units = 50))
+model.add(Dropout(0.2))
+
+model.add(Dense(units = 1))
+
+model.compile(optimizer = 'adam', loss = 'mean_squared_error')
+
+model.fit(x_train, y_train, epochs = 100, batch_size = 32)
+
 
 inputs = new_data[len(new_data) - len(test) - 60:].values
 inputs = inputs.reshape(-1,1)
