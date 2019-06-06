@@ -43,8 +43,11 @@ def prepare_data(df,forecast_col,forecast_out,test_size):
     label.dropna(inplace=True);                         # 去掉 na values
     y = np.array(label)                                
     
-    X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=test_size) 
-
+    #X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=test_size) 
+    X_train = X[:-60]
+    X_test = X[-60:]
+    Y_train = y[:-60]
+    Y_test = y[-60:]	
     response = [X_train,X_test , Y_train, Y_test , X_lately];
     return response;
 
@@ -71,7 +74,7 @@ print(score)
 
 y_test_predict = model.predict(X_test)
 
-plt.plot(y_test_predict,color='c')
+plt.plot(y_test_predict,color='r')
 plt.plot(Y_test,color='b')
 for i in range(len(Y_test)):
     print(y_test_predict[i],Y_test[i])

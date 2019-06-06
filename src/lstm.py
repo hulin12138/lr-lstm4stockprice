@@ -11,6 +11,9 @@ from sklearn.model_selection import cross_validate
 from sklearn.model_selection import train_test_split
 from sklearn import linear_model;
 
+from sklearn.preprocessing import MinMaxScaler
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, LSTM
 
 ####read data
 
@@ -29,21 +32,17 @@ df['Date'] = pd.to_datetime(df.Date,format='%Y-%m-%d')
 df.index = df['Date']
 
 #plot
-plt.figure(figsize=(12,4))
 #plt.plot(df['Close'], label='Close Price history')
 #plt.show()
 
+####lstm
 # 导入 keras 等相关包
-from sklearn.preprocessing import MinMaxScaler
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, LSTM
-
 # 选取 date 和 close 两列
 data = df.sort_index(ascending=True, axis=0)
-new_data = pd.DataFrame(index=range(0,len(df)),columns=['Date', 'Close Price'])
+new_data = pd.DataFrame(index=range(0,len(df)),columns=['Date', 'Close'])
 for i in range(0,len(data)):
     new_data['Date'][i] = data['Date'][i]
-    new_data['Close Price'][i] = data['Close Price'][i]
+    new_data['Close'][i] = data['Close'][i]
 
 # setting index
 new_data.index = new_data.Date
@@ -52,8 +51,8 @@ new_data.drop('Date', axis=1, inplace=True)
 # 分成 train and test
 dataset = new_data.values
 
-train = dataset[0:700,:]
-test = dataset[700:,:]
+train = dataset[:-60,:]
+test = dataset[-60:,:]
 
 # 构造 x_train and y_train
 scaler = MinMaxScaler(feature_range=(0, 1))
@@ -78,7 +77,7 @@ model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=2)
 
 inputs = new_data[len(new_data) - len(test) - 60:].values
 inputs = inputs.reshape(-1,1)
-inputs  = scaler.transform(inputs)
+inputs = scaler.transform(inputs)
 
 X_test = []
 for i in range(60,inputs.shape[0]):
@@ -90,9 +89,15 @@ X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
 closing_price = model.predict(X_test)
 closing_price = scaler.inverse_transform(closing_price)
 
+
+
+'''
 #for plotting
-train = new_data[:700]
-test = new_data[700:]
+train = new_data[:-60]
+test = new_data[-60:]
 test['Predictions'] = closing_price
-plt.plot(train['Close'])
-plt.plot(test[['Close','Predictions']])
+plt.figure(figsize=(12,4))
+plt.plot(train['Close'],color='b')
+plt.plot(test[['Close','Predictions']],color='r')
+plt.show()
+'''
