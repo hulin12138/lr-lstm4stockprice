@@ -19,18 +19,9 @@ from keras.layers import Dense, Dropout, LSTM
 
 df = pd.read_csv(sys.argv[1])
 
-####visualization
-
-#setting figure size
-rcParams['figure.figsize'] = 20,10
-
 #setting index as date
 df['Date'] = pd.to_datetime(df.Date,format='%Y-%m-%d')
 df.index = df['Date']
-
-#plot
-#plt.plot(df['Close'], label='Close Price history')
-#plt.show()
 
 ####lstm
 # 导入 keras 等相关包
@@ -64,26 +55,22 @@ x_train, y_train = np.array(x_train), np.array(y_train)
 x_train = np.reshape(x_train, (x_train.shape[0],x_train.shape[1],1))
 
 # 建立 LSTM network
-#model = Sequential()
-#model.add(LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1],1)))
-#model.add(LSTM(units=50))
-#model.add(Dense(1))
-
-#model.compile(loss='mean_squared_error', optimizer='adam')
-#model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=2)
 
 model= Sequential()
 
-model.add(LSTM(units = 50, return_sequences = True, input_shape = (x_train.shape[1], 1)))
+model.add(LSTM(units = 60, return_sequences = True, input_shape = (x_train.shape[1], 1)))
 model.add(Dropout(0.2))
 
-model.add(LSTM(units = 50, return_sequences = True))
+model.add(LSTM(units = 60, return_sequences = True))
 model.add(Dropout(0.2))
 
-model.add(LSTM(units = 50, return_sequences = True))
+model.add(LSTM(units = 60, return_sequences = True))
 model.add(Dropout(0.2))
 
-model.add(LSTM(units = 50))
+model.add(LSTM(units = 60, return_sequences = True))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units = 60))
 model.add(Dropout(0.2))
 
 model.add(Dense(units = 1))

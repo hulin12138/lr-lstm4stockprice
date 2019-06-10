@@ -16,10 +16,7 @@ from sklearn import linear_model;
 
 df = pd.read_csv(sys.argv[1])
 
-####visualization
 
-#setting figure size
-rcParams['figure.figsize'] = 20,10
 
 #for normalizing data
 scaler = MinMaxScaler(feature_range=(0, 1))
@@ -28,10 +25,6 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 df['Date'] = pd.to_datetime(df.Date,format='%Y-%m-%d')
 df.index = df['Date']
 
-#plot
-plt.figure(figsize=(12,4))
-#plt.plot(df['Close'], label='Close Price history')
-#plt.show()
 
 #####liner regretion
 def prepare_data(df,forecast_col,forecast_out,test_size):
@@ -75,6 +68,8 @@ y_test_predict = model.predict(X_test)
 
 print(y_test_predict.shape)
 print(Y_test.shape)
+rcParams['figure.figsize'] = 20,10
+plt.figure(figsize=(12,4))
 plt.plot(y_test_predict,color='r')
 plt.plot(Y_test,color='b')
 #for i in range(len(Y_test)):
